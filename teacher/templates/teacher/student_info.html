@@ -1,0 +1,95 @@
+{% extends 'teacher/teacher_base.html' %}
+
+{% block title %}我的小组|成员{% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block group_active %}active{% endblock %}
+{% block member_active %}active{% endblock %}
+
+{% block group_student %}
+    {% for member in request.user.teacher.student_set.all %}
+        {% if member.name == student.name %}
+            <li class='active'>
+        {% else %}
+            <li>
+        {% endif %}
+        <a href="{% url 'student_info' %}?student_name={{ member.name }}">
+            {{ member.name }}
+        </a>  
+        </li>
+    {% empty %}
+        <li><a>暂无</a></li>
+    {% endfor %}
+{% endblock %}
+
+
+{% block content_header %}{{ student.name }}{% endblock %}
+
+{% block content %}
+    <div class="col-md-3">
+        <div class="box box-primary">     <!-- 个人信息栏 开始 -->
+            <div class="box-body box-profile">
+                <h3 class="profile-username text-center">{{ student.name }}</h3>
+                <p class="text-muted text-center">{{ student.class_name }}</p>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                      <b>邮箱：</b>{{ student.email }}
+                    </li>
+                    <li class="list-group-item">
+                      <b>手机号码：</b>{{ student.phonenumber }}
+                    </li>
+                    <li class="list-group-item">
+                      <b>个人简介：</b>{{ student.introduction }}
+                    </li>
+                </ul>
+            </div>
+        </div>  <!-- 个人信息栏结束 -->  
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                {% if thesis %}
+                    {{ student.name }}的选题：{{ thesis.title }}
+                {% elif student_pub_thesis %}
+                    {{ student.name }}发布的选题：{{ student_pub_thesis.title }}
+                {% else %}
+                    暂无选题
+                {% endif %}
+            </div>
+            <div class="panel-body">
+                {% if thesis %}
+                    <p> <span>时间：{{ thesis.pub_date }}</span> 
+                        <span>标签：{% for tag in thesis.tags.all %}
+                                        {{ tag.name }}
+                                    {% endfor %}
+                        </span>
+                    </p>
+                    {{ thesis.content|safe }}
+                {% elif student_pub_thesis %}
+                    <h1>{{ student_pub_thesis.title }}</h1>
+
+                    {% if student_pub_thesis.need_verify %}
+                        <p>
+                            <span>时间：{{ student_pub_thesis.pub_date }}</span>
+                            状态：
+                            <span class='text-danger'>待审核</span>
+                        </p>
+                        <p>{{ student_pub_thesis.content|safe }}</p>
+                        <a href="" class="btn btn-primary">不同意</a>
+                        <a href="{% url 'aggre_thesis' %}?thesis_pk={{ student_pub_thesis.pk }}" 
+                            class="btn btn-danger">    
+                            同意
+                        </a>
+                    {% else %}
+                        <span>时间：{{ student_pub_thesis.pub_date }}</span>
+                        <span class='text-danger'>已审核，不同意该论文题目</span>
+                        <p>{{ student_pub_thesis.content|safe }}</p>
+                    {% endif %}
+                {% else %}
+                    <h2>暂未选择题目</h2>
+                {% endif %}
+            </div>
+        </div>
+</div>
+{% endblock %}

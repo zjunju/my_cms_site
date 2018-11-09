@@ -1,0 +1,110 @@
+{% extends 'teacher/teacher_base.html' %}
+{% load staticfiles %}
+
+{% block title %}我的选题{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+{% endblock %}
+
+
+{% block info_active %}{% endblock %}
+{% block my_thesis_active %}active{% endblock %}
+
+{% block all_thesis_active %}{{ all }}{% endblock %}
+{% block thesis_is_ch_active %} {{ is_choiced }} {% endblock %}
+{% block thesis_no_ch_active %} {{ no_choiced }} {% endblock %}
+{% block thesis_verify_active %} {{ verify }} {% endblock %}
+
+{% block content_header %} 
+    {{ content_header }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-7">
+        {% for thesis in theses %}
+            <h2><a href="{% url 'thesis_detail' thesis.pk %}">{{ thesis.title }}</a></h2>
+            <p><span>发布时间：{{ thesis.pub_date }}</span> 
+                <span>  选题学生：
+                    {% if thesis.is_choiced %}
+                        <a href="{% url 'student_info' %}?student_name={{ thesis.student.name }}">
+                            {{ thesis.student }}
+                        </a>
+                    {% else %}
+                        暂无人选
+                    {% endif %}
+                </span>
+            </p>
+            {% autoescape off %}
+            <p>{{ thesis.content|striptags|truncatechars:50 }} 
+                <a href="{% url 'thesis_detail' thesis.id %}">查看更多</a>
+            </p>
+            {% endautoescape %}
+            {% if no_choiced %}
+               <btn onclick="delete_thesis('{% url "delete_thesis" %}?thesis_title={{ thesis.title }}')" class="btn  btn-danger pull-right">
+                    删除选题
+                </btn>
+                <a href="{% url 'update_thesis' thesis.pk %}?from={{ request.get_full_path }}" 
+                    class='btn btn-primary mar-right'>修改选题
+                </a> 
+                <br />
+            {% endif %}
+        {% empty %}
+        <div class="center">
+            <i class="fa fa-book fa-5x" aria-hidden="true"></i>
+            <p>{{ no_theses_text }}</p>
+        </div>
+        {% endfor %}
+
+        {% if all %}
+            <a href="{% url 'publish_thesis' %}?from={{ request.get_full_path }}" 
+                class='btn btn-primary pull-right'>
+                发布选题
+            </a>
+        {% endif %}
+
+        <!-- 分页器-->
+        {% if theses %}    <!-- theses变量为paginator对象的某一页 -->
+            <div class="center">
+                <ul class="pagination">
+                    <li>
+                        {% if theses.has_previous %}
+                            <a href="?page={{ theses.previous_page_number }}">
+                                <span>&laquo;</span></a>
+                        {% else %}
+                            <span>&laquo;</span>
+                        {% endif %}
+                    </li>
+                    {% for page in page_range %}
+                        {% if page == theses.number %}    {# 当前页按钮变为active且和...一样不可点击 #}
+                            <li class='active'> <a href="">{{ page }}</a></li>
+                        {% elif page == '...' %}
+                            <li><a href="">{{ page }}</a></li>
+                        {% else %}
+                            <li>
+                                <a href="?page={{ page }}">
+                                    {{ page }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    <li>
+                        {% if theses.has_next %}
+                            <a href="?page={{ theses.next_page_number }}">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        {% else %}
+                            <span aria-hidden="true">&raquo;</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>  
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script_extends %}
+    <script type="text/javascript" src="{% static 'extends_script.js' %}"></script>
+{% endblock %}

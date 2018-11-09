@@ -1,0 +1,183 @@
+{% extends 'newBase.html' %}
+{% load staticfiles %}
+
+
+{% block title %}学生|首页{% endblock %}
+{% block header_extends %}<link rel="stylesheet" href="{% static 'base.css' %}">{% endblock %}
+
+{% block content_header %}个人信息{% endblock %}
+
+{% block left_navbar %}
+    <!-- Sidebar Menu -->
+    <!-- Optionally, you can add icons to the links -->
+    {% block search_form %}{% endblock %}
+    <li class="{% block info_active %}active{% endblock %}">
+        <a href="{% url 'student_home' %}">
+            <i class="fa fa-home"></i><span>个人信息</span>
+        </a>
+    </li>
+    <li class='treeview {% block thesis_active %}{% endblock %}'>
+       <a href="">
+            <i class="fa fa-book"></i><span>论文题目</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class='{% block my_thesis_active %}{% endblock %}'>
+                <a href="{% url 'student_thesis' %}">我的论文题目</a>
+            </li>
+            <li class='{% block all_thesis_active %}{% endblock %}'>
+                <a href="{% url 'thesis_list' %}">查看所有论文题目</a>
+            </li>
+            <li class='{% block all_teacher_active %}{% endblock %}'>
+                <a href="{% url 'teacher_list' %}">查看所有老师</a>
+            </li>
+            <li class="{% block my_collection_active %}{% endblock %}">
+                <a href="{% url 'student_collection' %}">我的收藏</a>
+            </li>
+        </ul>
+    </li>
+    <li class="{% block teacher_info_active %}{% endblock %}">
+      <a href="{% url 'teacher_info' %}?teacher_name={{ request.user.student.teacher.name }}">
+        <i class="fa fa-group"></i><span>我的导师</span>
+      </a>
+    </li>
+
+    <li class='treeview {% block message_active %}{% endblock %}'>
+        <a href="">
+            {% if request.user.no_r_message_count or request.user.no_r_ann_count %}
+                <span class="pull-right-container">
+                    {% if request.user.no_r_message_count %}
+                    <small class="label pull-right bg-blue" title='未读信息'>
+                        {{ request.user.no_r_message_count }}
+                    </small>
+                    {% endif %}
+                    {% if request.user.no_r_ann_count %}
+                    <small class="label pull-right bg-red" title='系统公告'>
+                        {{ request.user.no_r_ann_count }}
+                    </small>
+                    {% endif %}
+                </span>
+            {% else %}
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            {% endif %}
+            <i class="fa fa fa-envelope"></i><span>我的消息</span>  
+        </a>
+        <ul class="treeview-menu">
+            <li class='{% block send_message_active %}{% endblock %}'>
+                <a href="{% url 'student_message' %}">发送的信息</a>
+            </li>
+            <li class='{% block all_announcement_active %}{% endblock %}'>
+                <a href="{% url 'all_announcement' %}">
+                    所有公告
+                {% if request.user.no_r_ann_count %}
+                <small class="label pull-right bg-red" title='系统公告'>
+                    {{ request.user.no_r_ann_count }}
+                </small>
+                {% endif %}
+                </a>
+            </li>
+            <li class='{% block no_read_message_active %}{% endblock %}'>
+                <a href="{% url 'student_no_read_message' %}">
+                未读信息
+                {% if request.user.no_r_message_count %}
+                    <small class="label pull-right bg-blue" title='未读信息'>
+                        {{ request.user.no_r_message_count }}
+                    </small>
+                {% endif %}
+                </a>
+            </li>
+        </ul>
+    </li>
+    
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <p>名字：{{ student.name }}</p>
+        <p>班级：{{ student.class_name }}</p>
+        <p>邮箱：
+            {% if student.email %}
+            {{ student.email }}
+            {% else %}
+                暂无
+            {% endif %}
+        </p>
+        <p>联系方式：{{ student.phonenumber }}</p>
+        <p>毕设分数：
+            {% if student.score %}
+                {{ student.score }}
+            {% else %}
+                暂无
+            {% endif %}
+        </p>
+        <p>简介：{% if student.introduction %}
+                    {{ student.introduction }}
+                {% else %}
+                    暂无
+                {% endif %}
+        </p>
+        <a href="{% url 'student_update_info' %}?from={{ request.get_full_path }}" 
+            class='btn btn-danger'>
+            修改个人信息
+        </a>
+    </div>
+    <div class="col-md-4 col-md-offset-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                我的文件
+            </div>
+            <div class="panel-body">
+                <h4>公共文件</h4>
+                {% for file in public_files %}
+                    <a href="{% url 'download_file' %}?file_name={{ file }}">{{ file }}</a>
+                {% empty %}
+                    <p>暂无文件</p>
+                {% endfor %}
+                <h4>教师文件</h4>
+                {% for file in teacher_files %}
+                    <a href="{% url 'download_file' %}?file_name={{ file }}">
+                        {{ file }}
+                    </a>
+                {% empty %}
+                    <p>暂无文件</p>
+                {% endfor %}
+                <h4>我的文件</h4>
+                {% for file in student_files %}
+                    <a href="{% url 'download_file' %}?file_name={{ file }}">
+                        {{ file }}
+                    </a>
+                    <a href="{% url 'delete_file' %}?file_name={{ file }}" 
+                        class='btn btn-danger'>
+                        删除文件
+                    </a> 
+                    <br>
+                {% empty %}
+                    <p>暂未上传文件</p>
+                {% endfor %}
+                {% if student.teacher %}
+                <form action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- enctype="multipart/form-data" 表示不对字符进行编码 -->
+                    <input type="file" name='myfile' id='uploadFile'>
+                    <br>
+                    <input type="submit" value='上传文件' class='btn btn-primary' 
+                            onclick="upload_file()">
+                </form>
+                {% else %}
+                    <span class='text-danger'>请先选择老师才能上传文件</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+  
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'extends_script.js' %}"></script>
+{% endblock %}

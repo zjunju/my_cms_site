@@ -1,0 +1,36 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %}未读消息{% endblock %}
+
+{% block content_header %}未读消息{% endblock %}
+
+<!-- 设置左边竖排导航条高亮 -->
+{% block info_active %}{% endblock %}
+{% block message_active %} active {% endblock %}
+{% block no_read_message_active %} active {% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6">
+      <div class="list-group">
+        {% for message in no_read_messages %}
+          <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">
+                {{ message.sender }}
+                        <small class="label bg-red">5</small>
+                <span class="pull-right">
+                  {{ message.send_time|date:'m-d i:s' }}
+                </span>
+              </h4>
+              <p class="list-group-item-text">{{ message|truncatechars:30 }}</p>
+          </a>
+        {% empty %}
+        <div class="center">
+          <i class="fa fa-commenting-o fa-5x" aria-hidden="true"></i>
+          <p>暂无未读消息</p>
+        </div>
+        {% endfor %}
+      </div>   
+    </div>
+  </div>  
+{% endblock %}

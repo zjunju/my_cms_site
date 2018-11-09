@@ -1,0 +1,75 @@
+{% extends 'student/student_home.html' %}
+{% load staticfiles %}
+
+{% block title %}教师信息{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+{% endblock %}
+
+
+{% block info_active %}{% endblock %}
+{% block thesis_active %}{% endblock %}
+{% block all_thesis_active %}{% endblock %}
+{% block teacher_info_active %}{{ active }}{% endblock %}  <!-- 如果是学生导师则高亮 -->
+
+{% block content_header %}
+    {{ teacher.name }}的信息和论文题目
+    <a href="javascript:history.go(-1)" class="btn btn-danger">返回</a>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>{{ teacher.name }}的信息</h4>
+                </div>
+                <div class="panel-body">
+                    <p>姓名：{{ teacher.name }}</p>
+                    <p>学院：{{ teacher.college }}</p>
+                    <p>职位：{{ teacher.job_title }}</p>
+                    <p>手机号码：{{ teacher.phonenumber }}</p>
+                    <p>剩余指导学生人数：{{ teacher.getRestNumber }}</p>
+                    <p>个人简介：{{ teacher.introduction }}</p>
+                    <btn onclick="cancelTeacher('{% url 'cancel_teacher' %}','{{ teacher.name }}')"  class="btn btn-danger pull-right">
+                        取消选择
+                    </btn>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>{{ teacher.name }}的选题(一共{{ teacher.getRestThesisNum }}篇选题)</h4>
+                </div>
+                <div class="panel-body">
+                    {% for thesis in theses %}
+                        <h2><a href="{% url 'thesis_detail' thesis.pk %}">{{ thesis.title }}</a></h2>
+                        <span>标签：
+                            {% for tag in thesis.tags.all %}
+                            <a href="{% url 'thesis_list_with_tag' tag.name %}">
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+                        </span>
+                        <p>{{ thesis.content|striptags|truncatechars:50 }}</p>
+                    {% empty %}
+                        <div class="center">
+                            <i class="fa fa-book fa-5x" aria-hidden="true"></i>
+                            <p>暂无可选论文题目</p>
+                        </div>
+                    {% endfor %}
+                    <a href="{% url 'add_thesis' %}" class="btn btn-success pull-right">
+                        增加自己的选题
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'extends_script.js' %}"></script>
+{% endblock %}

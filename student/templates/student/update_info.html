@@ -1,0 +1,22 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %}修改个人信息{% endblock %}
+
+{% block content_header %}修改个人信息{% endblock %}
+
+{% block content %}
+    <form action="" method = 'POST'>
+        {% csrf_token %}
+        {% for field in student_info_form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            <p class='text-danger'>{{ field.errors.as_text }}</p>
+        {% endfor %}
+        {{ field.non_field_errors }}
+        <br>
+        <input type="submit" value='提交修改' class='btn btn-primary pull-right'>
+        <a href="javascript:history.go(-1)" class="btn btn-danger mar-right">返回</a>
+    </form>
+{% endblock %}
+
+

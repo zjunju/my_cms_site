@@ -1,0 +1,63 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %} {{ thesis.title }} {% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block thesis_active %}active{% endblock %}
+
+
+{% block content_header %}
+    {{ thesis.title }}
+    <a href="javascript:history.go(-1)" class="btn btn-danger">返回</a>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <span class='glyphicon glyphicon-time'>时间：{{ thesis.pub_date }}</span>
+                <span class=''>类型：
+                {% for tag in thesis.tags.all %}
+                    <a href="{% url 'thesis_list_with_tag' tag.name %}">{{ tag.name }}</a>
+                {% endfor %}
+                </span>
+                <span>发布者：
+                    <a href="{% url 'teacher_info' %}?publisher_pk={{ thesis.publisher.pk }}">
+                        {{ thesis.publisher.teacher.name}}
+                    </a>
+                </span>
+            </p>
+            <p>
+                {% autoescape off %}  <!-- 将自动转义关闭，html页面显示字体原来的样式，不显示html代码 -->
+                    {{ thesis.content }}
+                {% endautoescape %}
+            </p>
+            {% if thesis.is_choiced %}   <!-- 判断此题是否有人选择， 如果已有人选，则不显示申请选择此题按钮-->
+            {% else %}
+                <a href="{% url 'apply_thesis' thesis.pk %}" class="btn btn-primary pull-right">
+                    申请选择此题
+                </a>
+                <a href="{% url 'collect' thesis.pk %}?content_type=thesis" 
+                    class='btn btn-danger mar-right'>
+                    收藏选题
+                </a>
+            {% endif %}
+        </div>
+        <div class="col-md-3 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>猜你喜欢</h4>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        {% for thesis in theses_with_like %}
+                            <li>
+                                <a href="{% url 'thesis_detail' thesis.pk %}">{{ thesis.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

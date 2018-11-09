@@ -1,0 +1,62 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %}学生|{{ content_header }}{% endblock %}
+
+{% block content_header %}{{ content_header }}{% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block message_active %}active{% endblock %}
+
+
+{% block all_announcement_active %}{{ ann_active }}{% endblock %}
+
+{% block no_read_message_active %}{{ mesg_active }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="list-group">
+                {% for ann_or_mesg in ann_or_mesgs %}
+                {% if ann %}
+                  <a href="{% url 'announcement_detail' ann_or_mesg.pk %}" class="list-group-item">
+                {% elif mesg %}
+                  <a href="{% url 'student_message' %}" class="list-group-item">
+                {% endif %}
+                      <h4 class="list-group-item-heading">
+                        <span>
+                          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                          {{ ann_or_mesg.sender }}
+                        </span>
+                        
+                        <span class='pull-right'>
+                          <i class="fa fa-clock-o" aria-hidden="true"></i>
+                          {% if mesg %}
+                            {{ ann_or_mesg.send_time|date:'m-d i:s' }}
+                          {% elif ann %}
+                            {{ ann_or_mesg.pub_time|date:'m-d i:s' }}
+                          {% endif %}
+                        </span>
+                      </h4>
+                      <p class="list-group-item-text">
+                          {% if mesg %}
+                            {{ ann_or_mesg.content|truncatechars:30 }}
+                          {% elif ann %}
+                            {{ ann_or_mesg.text|truncatechars:30 }}
+                          {% endif %}
+                      </p>
+                  </a>
+                {% empty %}
+                    <div class="center">
+                      {% if mesg %}
+                        <i class="fa fa-commenting-o fa-5x" aria-hidden="true"></i>
+                        <p>暂无未读信息</p>
+                      {% elif ann %}
+                        <i class="fa fa-bell fa-5x" aria-hidden="true"></i>
+                        <p>暂无未读公告</p>
+                      {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

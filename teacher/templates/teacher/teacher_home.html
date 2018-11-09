@@ -1,0 +1,106 @@
+{% extends 'teacher/teacher_base.html' %}
+{% load staticfiles %}
+
+{% block title %} 教师|首页 {% endblock %}
+{% block content_header %}个人信息{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>我的信息</h4>
+            </div>
+            <div class="panel-body">
+                <p>姓名：{{ teacher.name }}</p>
+                <p>学院：{{ teacher.college }}</p>
+                <p>职位：{{ teacher.job_title }}</p>
+                <p>手机号码：{{ teacher.phonenumber }}</p>
+                <p>剩余指导学生人数：{{ teacher.getRestNumber }}</p>
+                <p>剩余未选论文选题数量：{{ teacher.getRestThesisNum }}</p>
+                <p>个人简介：{{ teacher.introduction }}</p>
+                <a href="{% url 'teacher_update_info' %}" class='btn btn-danger'>修改个人信息</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>我的学生</h4>
+            </div>
+            <div class="panel-body">
+                {% for student in students %}
+                    <h3>
+                        <a href="{% url 'student_info' %}?student_pk={{student.pk}}">
+                            {{ student.name }}
+                        </a>
+                    </h3>
+                    {% if student.thesis %}
+                        他的选题：<a href="{% url 'thesis_detail' student.thesis.pk %}">
+                            {{ student.thesis.title }}
+                        </a>
+                    {% elif student.user.thesis_set.all %}
+                        他提交的待审核的选题：
+                        <a href="{% url 'thesis_detail' student.user.thesis_set.first.pk %}">
+                            {{ student.user.thesis_set.first.title }}
+                        </a>
+                    {% else %}
+                        <h4>暂未选择题目</h4>
+                    {% endif %}
+                {% empty %}
+                    <h3>暂无学生</h3>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                我的文件
+            </div>
+            <div class="panel-body">
+                <h4>公共文件</h4>
+                {% for file, file_path in public_files_dict.items %}
+                    <a href="{% url 'download_file' %}?file_path={{ file_path }}">{{ file }}</a>
+                {% empty %}
+                    <p>暂无文件</p>
+                {% endfor %}
+
+                <h4>学生上传的文件</h4>
+                {% for student, student_files_dict in students_dict.items %}
+                    <h5>{{ student }}</h5>
+                    {% for file, file_path in student_files_dict.items %}
+                        <a href="{% url 'download_file' %}?file_path={{ file_path }}">{{ file }}</a>
+                    {% empty %}
+                        <p>暂无文件</p>
+                    {% endfor %}
+                {% empty %}
+                    <p>暂无学生</p>
+                {% endfor %}
+                <h4>我上传的文件</h4>
+                {% for file, file_path in teacher_files_dict.items %}
+                    <a href="{% url 'download_file' %}?file_path={{ file_path }}">{{ file }}</a>
+                    <a href="{% url 'delete_file' %}?file_path={{ file_path }}" 
+                    class='btn btn-danger'>删除文件</a> 
+                    <br>
+                {% empty %}
+                    <p>暂未上传文件</p>
+                {% endfor %}
+                <form action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- enctype="multipart/form-data" 表示不对字符进行编码 -->
+                    <input type="file" name='myfile' id='uploadFile'>
+                    <br>
+                    <input type="submit" value='上传文件' onclick="upload_file()" 
+                    class='btn btn-primary'>
+                </form>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'extends_script.js' %}"></script>
+{% endblock %}

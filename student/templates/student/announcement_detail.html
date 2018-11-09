@@ -1,0 +1,12 @@
+{% extends 'student/all_ann_or_mesg.html' %}
+
+{% block title %}公告{% endblock %}
+
+{% block content_header %}公告信息{% endblock %}
+
+{% block content %}
+
+    <p>{{ announcement.pub_time }}</p>
+    <p>{{ announcement.text }}</p>
+    
+{% endblock %}

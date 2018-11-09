@@ -1,0 +1,117 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %}论文题目{% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block thesis_active %}active{% endblock %}
+{% block all_thesis_active %}active{% endblock %}
+
+{% block content_header %}
+    {{ content_header }}(一共{{ theses|length }}篇论文题目)
+{% endblock %}
+
+{% block search_form %}
+    <form action="" method="GET" class="sidebar-form">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="thesis_name" class="form-control" 
+                    placeholder="输入论文题目">
+            <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            {% block thesis_list %}
+                {% for thesis in theses_with_page %}
+                    <h2><a href="{% url 'thesis_detail' thesis.pk %}">{{ thesis.title }}</a></h2>
+                    <p>
+                        <span>发布时间：{{ thesis.pub_date }}</span> 
+                        <span>发布者：<a href="{% url 'teacher_info' %}?teacher_name={{ thesis.publisher.teacher.name }}">
+                        {{ thesis.publisher.teacher.name }}</a></span>
+                        <span>标签：
+                            {% for tag in thesis.tags.all %}
+                                <a href="{% url 'thesis_list_with_tag' tag.name %}">
+                                    {{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </span>
+                    </p>
+                    <p>{{ thesis.content|striptags|truncatechars:50 }}</p>
+                {% empty %}
+                    <div class="center">
+                        <i class="fa fa-book fa-5x" aria-hidden="true"></i>
+                        <p>暂无可选论文题目</p>
+                    </div>
+                {% endfor %}
+                    <!-- 分页器 -->
+                {% if theses_with_page %}
+                <div class="student-paginator">
+                    <ul class="pagination">
+                        <li>
+                            {% if theses_with_page.has_previous %}
+                            <a href="?page={{ theses_with_page.previous_page_number }}" aria-label="Previous" >
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                            {% else %}
+                                <span aria-hidden="true" title='没有上一页'>&laquo;</span>
+                            {% endif %}
+                        </li>
+                        {% for page in page_range %}
+                            <!-- theses_with_page.number  返回当前页的页码 -->
+                            {% if page == theses_with_page.number %}   
+                                <li class="active"><span>{{ page }}</span></li>
+                            {% else %}
+                                {% if page == '...' %}
+                                    <li><span>{{ page }}</span></li>
+                                {% else %}
+                                    <li>
+                                        <a href="?page={{ page }}">
+                                         {{ page }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <li>
+                        {% if theses_with_page.has_next %}
+                            <a href="?page={{ theses_with_page.next_page_number }}"  ria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        {% else %}
+                                <span aria-hidden="true" title='没有下一页'>&raquo;</span>
+                        {% endif %}
+                        </li>
+                   </ul>
+                </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+        {% block right_col %}
+            <div class="col-md-2 col-md-offset-2">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>选题标签</h4>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                        {% for tag, tag_count in tags.items %}
+                            <li class='tag-li'>
+                                <a href="{% url 'thesis_list_with_tag' tag.name %}">
+                                    {{ tag.name }}
+                                </a>({{ tag_count }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

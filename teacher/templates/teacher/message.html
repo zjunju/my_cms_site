@@ -1,0 +1,36 @@
+{% extends 'teacher/teacher_base.html' %}
+
+{% block info_active %}{% endblock %}
+{% block message_active %}active{% endblock %}
+
+{% block content_header %}全部消息{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+       <ul>
+            {% for student, latest_message in latest_message_dict.items %}
+                <li class="student-message">
+                  <div class="message-header">
+                      <a href="{% url 'message_with_student' %}?student_pk={{ student.pk }}">
+                          {{ student.name }}
+                      </a>
+                          <span class='pull-right'>
+                              <i class="fa fa-fw fa-clock-o pull-"></i>{{ latest_message.send_time }}
+                          </span>
+                  </div>
+                  <div class="message-body">
+                      <a href="{% url 'message_with_student'%}?student_pk={{ student.pk }}">
+                        <p>{{ latest_message.content }}</p>
+                      </a>
+                  </div>
+
+                </li>
+            {% empty %}
+                <p>暂无</p>
+            {% endfor %}
+      </ul>
+    </div>
+</div>
+ 
+{% endblock %}

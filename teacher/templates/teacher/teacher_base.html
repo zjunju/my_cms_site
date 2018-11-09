@@ -1,0 +1,125 @@
+{% extends 'newBase.html' %}
+{% load staticfiles %}
+
+{% block title %}{% endblock %}
+{% block header_extends %}<link rel="stylesheet" href="{% static 'base.css' %}">{% endblock %}
+
+<!-- 教师页面左边导航栏 -->
+{% block left_navbar %}
+    <!-- 左边导航栏 Menu -->
+        <!-- Optionally, you can add icons to the links -->
+    <li class="{% block info_active %}active{% endblock %}">
+        <a href="{% url 'teacher_home' %}">
+            <i class="fa fa-home"></i><span>个人信息</span>
+        </a>
+    </li>
+    <li class='treeview {% block my_thesis_active %}{% endblock %}'>
+       <a href="#">
+            <i class="fa fa-book"></i><span>我发布的论文题目</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class='{% block all_thesis_active %}{% endblock %}'>
+                <a href="{% url 'teacher_thesis' %}?thesis_type=all">
+                    <i class="fa fa-circle-o"></i>所有论文题目
+                </a>
+            </li>
+            <li class='{% block thesis_is_ch_active %}{% endblock %}'>
+                <a href="{% url 'teacher_thesis' %}?thesis_type=is_choiced">
+                    <i class="fa fa-circle-o"></i>已选论文题目
+                </a>
+            </li>
+            <li class='{% block thesis_no_ch_active %}{% endblock %}'>
+                <a href="{% url 'teacher_thesis' %}?thesis_type=no_choiced">
+                    <i class="fa fa-circle-o"></i>未选论文题目
+                </a>
+            </li>
+            <li class='{% block thesis_verify_active %}{% endblock %}'>
+                <a href="{% url 'teacher_thesis' %}?thesis_type=thesis_verify">
+                    <i class="fa fa-circle-o"></i>待审论文题目
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li class="treeview {% block group_active %}{% endblock %}">
+        <a href="#">
+            <i class="fa fa-group"></i><span>我的小组</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="treeview {% block member_active %}{% endblock %}">
+              <a href="">小组成员
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                {% block group_student %}
+                    {% for student in request.user.teacher.student_set.all %}
+                        <li>
+                            <a href="{% url 'student_info' %}?student_name={{ student.name }}">
+                                {{ student.name }}
+                            </a>  
+                        </li>
+                    {% empty %}
+                        <li><a>暂无</a></li>
+                    {% endfor %}
+                {% endblock %}
+              </ul>
+            </li>
+            <li><a href="#">小组文件</a></li>
+        </ul>
+    </li>
+    <li class='treeview {% block message_active %}{% endblock %}'>
+        <a>
+            {% if request.user.no_r_message_count or request.user.no_r_ann_count %}
+                {% if request.user.no_r_message_count %}
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-blue" title='未读信息'>
+                      {{ request.user.no_r_message_count }}
+                    </small>
+                {% endif %}
+                {% if request.user.no_r_ann_count %}
+                    <small class="label pull-right bg-red" title='系统公告'>
+                        {{ request.user.no_r_ann_count }}
+                    </small>
+                {% endif %}
+                </span>
+            {% else %}
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            {% endif %}
+            <i class="fa fa fa-envelope"></i><span>我的消息</span>
+        </a>
+        <ul class="treeview-menu">
+            <li class='{% block all_ann_active %}{% endblock %}'>
+                <a href="{% url 'teacher_thesis' %}?thesis_type=all">
+                    <i class="fa fa-bell"></i>所有公告
+                </a>
+            </li>
+            <li class='{% block no_r_message_active %}{% endblock %}'>
+                <a href="{% url 'teacher_message' %}">
+                    <i class="fa fa-commenting-o"></i>
+                        所有未读信息
+                    {% if request.user.no_r_message_count %}
+                        <small class="label pull-right bg-blue" title='未读信息'>
+                            {{ request.user.no_r_message_count }}
+                        </small>
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+    </li>
+{% endblock %}
+
+<!-- 教师页面主体内容头部显示信息 -->
+{% block content_header %}{% endblock %}
+
+<!-- 教师页面主体内容 -->
+{% block content %}{% endblock %}

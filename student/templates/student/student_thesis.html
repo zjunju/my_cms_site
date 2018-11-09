@@ -1,0 +1,86 @@
+{% extends 'student/student_home.html' %}
+
+{% block title %}学生|我的选题{% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block thesis_active %}active{% endblock %}
+{% block my_thesis_active %}active{% endblock %}
+
+{% block content_header %}我的选题{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        {% if thesis %}
+            <h1>{{ thesis.title }}</h1>
+            {% if thesis.publisher != request.user %}
+            <p>
+                <span class='glyphicon glyphicon-time'>时间：{{ thesis.pub_date }}</span>
+                <span class=''>类型：
+                {% for tag in thesis.tags.all %}
+                    {{ tag.name }}
+                {% endfor %}
+                </span> 
+                <span>发布者：
+                    <a href="{% url 'teacher_info' %}?publisher_pk={{ thesis.publisher.pk }}">
+                        {{ thesis.publisher.teacher.name }}
+                    </a>
+                </span>
+            </p>
+            <p>{{ thesis.content|safe }}</p>
+            <a href="{% url 'cancel_thesis' thesis.pk %}" class="btn btn-danger pull-right">
+                取消选题
+            </a>
+            {% else %}
+            <p>
+                <span class='glyphicon glyphicon-time'>时间：{{ thesis.pub_date }}</span>
+            </p>
+            <p>{{ thesis.content|safe }}</p>
+                <a href="{% url 'student_delete_thesis' thesis.pk %}" 
+                    class="btn btn-danger pull-right">
+                    删除选题
+                </a>
+            {% endif %}
+        {% elif student.teacher %}
+            {% if student_pub_thesis %}
+                <h1>我发布的论文题目</h1>
+                <h3>{{ student_pub_thesis.title }}</h3>
+                <p>
+                    <span>时间：{{ student_pub_thesis.pub_date|date:'m月d日' }}</span>
+                    状态：
+                        {% if student_pub_thesis.need_verify %}
+                            <span class="text-danger">待审核</span>
+                        {% else %}
+                            <span>审核未通过</span>
+                        {% endif %}
+                </p>
+                <p>
+                    {% autoescape off %} <!-- 将自动转义关闭， 页面显示html样式文字 -->
+                        {{ student_pub_thesis.content }}
+                    {% endautoescape %}
+                </p>
+                <a href="{% url 'student_delete_thesis' student_pub_thesis.pk %}" 
+                    class="btn btn-danger pull-right">删除选题
+                </a>
+            {% else %}
+                <p>
+                    已选教师，暂未选题，
+                    <a href="{% url 'teacher_info' %}?publisher_pk={{ student.teacher.user.pk }}" 
+                        class="btn btn-primary">
+                        查看导师选题
+                    </a>或
+                    <a href="{% url 'add_thesis' %}" class="btn btn-success">添加自己的选题</a>
+                </p>
+            {% endif %}
+        {% else %}
+            <p>
+                暂未选题和选择导师，
+                <a href="{% url 'thesis_list' %}" class='btn btn-primary'>马上选题</a>或
+                <a href="{% url 'teacher_list' %}" class="btn btn-success">马上选择教师</a>
+            </p>
+        {% endif %}
+    </div>
+</div>
+    <!-- <p>{{ messages.tag }}</p> -->
+{% endblock %}
+

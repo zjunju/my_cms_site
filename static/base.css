@@ -1,0 +1,126 @@
+body{
+    font-size: 16px!important;
+}
+
+
+/* 设置短的输入框 */
+.input-field{
+    width: 30%;
+    font-size: 14px;
+    display: block;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-logo-size{
+    font-size: 30px;
+}
+
+ul{
+    list-style-type: none;
+    padding: 0;
+    margin:　0;
+}
+
+.form-control{
+    margin-bottom: 10px;
+}
+
+/* thesis_no_choiced.html  修改选题<a class='mar-right'> */
+.mar-right{
+    margin-right: 20px;
+    float: right;
+}
+
+/*  设置messages.error的信息样式 */
+.alert-error{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.chat-text{
+    border-radius: 5px;
+    position: relative;
+    padding: 5px 10px;
+    background: #d2d6de;
+    border: 1px solid #d2d6de;
+    margin: 5px 0;
+    color: #444;
+}
+
+div.django-ckeditor-widget{
+    width: 100%;
+}
+
+.chat-text-right{
+    border-radius: 5px;
+    position: relative;
+    padding: 5px 10px;
+    background: #3c8dbc;
+    border-color: #3c8dbc;
+    border: 1px solid #d2d6de;
+    margin: 5px 0;
+    color: #fff;
+}
+
+.my-panel .panel-primary .panel-height{
+    height: 600px;
+}
+
+/* student/thesis_list.html 标签 */
+.tag-li{
+    font-size: 14px;
+}
+
+/* teacher/message.html 消息列表div */
+.student-message{
+    margin-bottom: 20px;
+    border: solid 1px #d2d6de;
+}
+
+.student-message a{
+    color: #333;
+    line-height: 30px;
+}
+
+.message-header{
+    background-color: #d2d6de;
+}
+
+/* 将聊天信息框的header文本设置居中 */
+.pull-center{
+    text-align: center;
+}
+
+/*send_message.html student */
+
+/* student的paginator */
+div.student-paginator{
+    display: inline-block;
+    padding-left: 40%;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+a.publish-thesis-btn{
+    margin-top: 10px;
+}
+
+div.center{
+    text-align: center;
+    margin-top: 10%;
+}
+
+div.disggre-reson-hid{
+    display: none;
+    margin-top: 40px;
+}
+

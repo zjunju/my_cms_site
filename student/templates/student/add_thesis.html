@@ -1,0 +1,29 @@
+{% extends 'student/student_thesis.html' %}
+{% load staticfiles %}
+
+
+{% block title %}发布选题{% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+
+{% block content_header %}
+    添加选题
+{% endblock %}
+
+{% block content %}
+    <form action="" method='POST'>
+        <h3 class="text-danger">{{ thesis_form.non_field_errors }}</h3>
+        {% csrf_token %}
+        {% for field in thesis_form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label> <br>
+            {{ field }}
+            <p class='text-danger'>{{ field.errors.as_text }}</p>
+        {% endfor %}
+        <input type="submit" value='发布选题' class='btn btn-primary pull-right'>
+        <a href="javascript:window.history.go(-1)" class="btn btn-danger mar-right">返回</a>
+    </form>
+{% endblock %}

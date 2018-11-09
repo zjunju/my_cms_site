@@ -1,0 +1,86 @@
+{% extends 'teacher/teacher_base.html' %}
+{% load staticfiles %}
+
+
+{% block title %} {{ thesis.title }} {% endblock %}
+
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'base.css' %}"> 
+{% endblock %}
+
+{% block info_active %}{% endblock %}
+{% block my_thesis_active %}active{% endblock %}
+
+{% block content_header %}
+    {{ thesis.title }}
+    <a href="javascript:history.go(-1)" class="btn btn-danger">返回</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <p>
+            <span class='glyphicon glyphicon-time'>时间：{{ thesis.pub_date }}</span>
+            {% if thesis.tags.all %}
+                <span class=''>类型：
+                    {% for tag in thesis.tags.all %}
+                        {{ tag.name }}
+                    {% endfor %}
+                </span>
+            {% endif %}
+            {% if thesis.is_choiced %}
+                {% if thesis.need_verify %}
+                    <span>
+                    发起审核的学生：
+                    <a href="{% url 'student_info' %}?student_pk={{ thesis.publisher.student.pk }}">
+                        {{ thesis.publisher.student.name }}
+                    </a>
+                    </span>
+                {% else %}
+                <span>
+                    选题学生：<a href="{% url 'student_info' %}?student_pk={{ thesis.student.pk }}">
+                    {{ thesis.student }}</a>
+                </span>
+                {% endif %}
+            {% endif %}
+        </p>
+        <p>{{ thesis.content|safe }}</p>
+
+        {% if thesis.is_choiced %}
+            {% if thesis.need_verify %}
+                <a href="{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}" 
+                    class="btn btn-success pull-right">
+                    审核通过
+                </a>
+                <button class="btn btn-warning mar-right" id='show_div'">
+                    审核不通过
+                </button>
+                <div class="disggre-reson-hid" id='disggreReson'>
+                    <form action="{% url 'disaggre_thesis' %}" method='POST'>
+                        {% csrf_token %}
+                        <input type="hidden" value='{{ thesis.publisher.pk }}' 
+                                name='student_user_pk'> 
+                        <span>请输入不同意的理由</span>
+                        <textarea class="form-control" rows="3" name='disggre_text' 
+                                    hloaderplace='请输入理由'></textarea>
+                        <button class="btn btn-primary pull-right">
+                            发送
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        {% else %}
+           <btn onclick="delete_thesis('{% url "delete_thesis" %}?thesis_title={{ thesis.title }}')" 
+                class="btn  btn-danger pull-right">
+                删除选题
+           </btn>
+            <a href="{% url 'update_thesis' thesis.pk %}?from={{ request.get_full_path }}" class="btn btn-primary mar-right">修改论文信息</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script_extends %}
+    <script type="text/javascript" src="{% static 'extends_script.js' %}"></script>
+{% endblock %}

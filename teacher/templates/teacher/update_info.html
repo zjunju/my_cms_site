@@ -1,0 +1,22 @@
+{% extends 'teacher/teacher_base.html' %}
+{% load staticfiles %}
+
+{% block title %}教师|修改信息{% endblock %}
+{% block content_header %}
+    <span>修改个人信息</span>
+    <!-- javascript:history.go(-1) 返回上一页 -->
+     
+{% endblock %}
+
+{% block content %}
+    <form action="" method = 'POST'>
+        {% csrf_token %}
+        {% for field in  update_info_form %}
+            <label for="{{ field.id_for_label }}" class='field-label'>{{ field.label }}</label>
+            {{ field }}
+            <p class="text-danger">{{ field.errors.as_text }}</p>
+        {% endfor %}
+        <input type="submit" class='btn btn-primary pull-right' value='修改'>
+        <a href="javascript:history.go(-1)" class="btn btn-danger mar-right">返回</a>
+    </form>
+{% endblock %}
