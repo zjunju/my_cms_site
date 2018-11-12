@@ -48,11 +48,11 @@
 
         {% if thesis.is_choiced %}
             {% if thesis.need_verify %}
-                <a href="{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}" 
-                    class="btn btn-success pull-right">
+                <button class="btn btn-success pull-right" 
+                        onclick='aggre_thesis("{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}")'>
                     审核通过
-                </a>
-                <button class="btn btn-warning mar-right" id='show_div'">
+                </button>
+                <button class="btn btn-warning mar-right" id='show_div'>
                     审核不通过
                 </button>
                 <div class="disggre-reson-hid" id='disggreReson'>
@@ -63,10 +63,11 @@
                         <span>请输入不同意的理由</span>
                         <textarea class="form-control" rows="3" name='disggre_text' 
                                     hloaderplace='请输入理由'></textarea>
-                        <button class="btn btn-primary pull-right">
-                            发送
-                        </button>
+                        <button class="btn btn-primary pull-right">发送</button>
                     </form>
+                    <button class="btn btn-danger mar-right" onclick="cancel_show()">
+                        取消
+                    </button>
                 </div>
             {% endif %}
         {% else %}

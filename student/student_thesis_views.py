@@ -8,7 +8,6 @@ from django.db.utils import IntegrityError   #键值重复错误
 from cms_site.utils import get_page_list, get_tag_list
 
 from thesis.forms import UpdateThesisForm
-from message.models import Message
 from thesis.models import Thesis
 from teacher.models import Teacher
 
@@ -53,17 +52,6 @@ def teacher_list(request):
             teachers = cache.get('teachers', None)
             if not teachers:
                 teachers = list(Teacher.objects.filter(college= user.student.college))
-                #使用希尔排序对teachers(根据teacher的getRestThesisNum)进行排序
-                gap = len(teachers) // 2
-                while gap > 0:
-                    for i in range (gap,len(teachers)):
-                        j = i
-                        while j >=gap:
-                            if teachers[j].getRestThesisNum() > teachers[j-gap].getRestThesisNum():
-                                teachers[j],teachers[j-gap] = teachers[j-gap] ,teachers[j]
-                            j -= gap
-
-                    gap = gap // 2
                 cache.set('teachers', teachers, 600)
 
         context = get_page_list(teachers, page, num, 'teachers_with_page')
@@ -129,8 +117,11 @@ def thesis_list(request):
             if theses.count():
                 messages.success(request, '为你找到如下结果')
             else:
-                theses = Thesis.objects.filter(is_choiced = False, \
-                                            publisher__teacher__college = college)
+                theses = cache.get('theses', None)
+                if not theses:
+                    theses = Thesis.objects.filter(is_choiced = False, \
+                                                publisher__teacher__college = college)
+                    cache.set('theses', theses, 120)
                 messages.error(request, '搜索不到此论文题目，已为你显示所有论文题目')
         else:
             theses = cache.get('theses', None)
@@ -139,10 +130,15 @@ def thesis_list(request):
                                                 publisher__teacher__college = college)
                 cache.set('theses', theses, 120)
 
+        tag_list = cache.get('thesis')
+        if not tag_list:
+            tag_list = get_tag_list(user.student.college)
+            cache.set('tag_lsit', tag_list, 600)
+
         context = get_page_list(theses, page, num, 'theses_with_page')
         context['theses'] = theses
         context['content_header'] = '所有论文题目'
-        context['tags'] = get_tag_list(college)
+        context['tags'] = tag_list
         return render(request, 'student/thesis_list.html', context)
     else:
         return redirect('/')
@@ -160,8 +156,13 @@ def thesis_list_with_tag(request, tag_name):
         if theses:
             context = get_page_list(theses, page, num, 'theses_with_page')
 
+        tag_list = cache.get('tag_list')
+        if not tag_list:
+            tag_list = get_tag_list(user.student.college)
+            cache.set('tag_lsit', tag_list, 600)
+
         context['theses'] = theses
-        context['tags'] = get_tag_list(user.student.college)
+        context['tags'] = tag_list
         context['content_header'] = tag_name
         return render(request, 'student/thesis_list.html', context)
     else:
@@ -178,14 +179,16 @@ def apply_thesis(request, thesis_pk):
             if student[0].is_choiced_thesis or user.thesis_set.count() > 0:
                 messages.error(request, '你已经选择论文题目。')
                 return redirect(request.META.get('HTTP_REFERER'))
-            elif teacher.getRestNumber() <= 0:
+            elif teacher.rest_number <= 0:
                 messages.error(request,'该老师已经满人')
                 return redirect(request.META.get('HTTP_REFERER'))
             else:
                 try:
-                    student.update(thesis = thesis, teacher = teacher, is_choiced_thesis = True)
+                    student.update(thesis = thesis, teacher=teacher, is_choiced_thesis=True)
+                    teacher.rest_number -= 1
                     thesis.is_choiced = True
                     thesis.save()
+                    teacher.save()
                     messages.success(request, '选择成功')
                 except IntegrityError:
                     messages.error(request, '该题已被选择！')
@@ -202,12 +205,15 @@ def cancel_thesis(request, thesis_pk):
     user = request.user
     if user.is_authenticated and user.person == 'student':
         student = Student.objects.get(number = user.username)
+        teacher = student.teacher
         thesis = Thesis.objects.get(pk = thesis_pk)
         student.thesis = None
         student.is_choiced_thesis = False
         thesis.is_choiced = False
+        teacher.rest_number += 1
         student.save()
         thesis.save()
+        teacher.save()
         messages.success(request, '取消选题成功')
         return redirect(reverse('student_thesis'))
     else:
@@ -219,12 +225,15 @@ def cancel_teacher(request):
     if user.is_authenticated and user.person == 'student':
         student = user.student 
         thesis = student.thesis
+        teacher = student.teacher
+        teacher.rest_number -= 1
         student.teacher = None
         if thesis:
             thesis.is_choiced = False
             student.thesis = None
             student.is_choiced_thesis = False
         student.save()
+        teacher.save()
         messages.error(request, '取消成功！')
         return redirect(reverse('student_thesis'))
 
@@ -239,10 +248,8 @@ def add_thesis(request):
         #判断学生是否已经发布过论文选题
         if user.thesis_set.count() > 0:
             messages.error(request, '你已经发布过论文选题！')
-            return redirect(request.META.get('HTTP_REFERER'))
         elif student.thesis:
             messages.error(request, '你已经有论文选题！')
-            return redirect(request.META.get('HTTP_REFERER'))
         else:
             if request.method == 'POST':
                 thesis_form = UpdateThesisForm(request.POST)
@@ -251,8 +258,9 @@ def add_thesis(request):
                     content = thesis_form.cleaned_data['content']
                     teacher = student.teacher
                     if teacher:
-                        thesis = Thesis.objects.create(title=title, content=content,is_choiced=True,\
-                                                        need_verify=True,publisher=user)
+                        thesis = Thesis.objects.create(title=title, content=content,\
+                                        is_choiced=True,need_verify=True,publisher=user)
+
                         messages.success(request, '已添加自己的选题成功，等待教师审核！')
                     else:
                         messages.error(request, '还未选择指导老师！')
@@ -263,6 +271,7 @@ def add_thesis(request):
             context = {}
             context['thesis_form'] = thesis_form
             return render(request, 'student/add_thesis.html', context)
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         return redirect('/')
 
@@ -275,13 +284,8 @@ def delete_thesis(request, thesis_pk):
         student.is_choiced_thesis = False
         student.save()
         thesis.delete()
-        try:
-            content = '老师，我刚刚自己发布了选题<%s>，请您审核！'%thesis
-            message = Message.objects.get(content=content, sender=user)
-            message.delete()
-            messages.success(request,'删除成功！')
-        except ObjectDoesNotExist:
-            pass
+        messages.success(request,'删除成功！')
+
         return redirect(request.META.get('HTTP_REFERER'))
     else:
         return redirect(reverse('login'))

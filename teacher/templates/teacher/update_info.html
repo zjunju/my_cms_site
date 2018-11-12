@@ -9,14 +9,18 @@
 {% endblock %}
 
 {% block content %}
-    <form action="" method = 'POST'>
-        {% csrf_token %}
-        {% for field in  update_info_form %}
-            <label for="{{ field.id_for_label }}" class='field-label'>{{ field.label }}</label>
-            {{ field }}
-            <p class="text-danger">{{ field.errors.as_text }}</p>
-        {% endfor %}
-        <input type="submit" class='btn btn-primary pull-right' value='修改'>
-        <a href="javascript:history.go(-1)" class="btn btn-danger mar-right">返回</a>
-    </form>
+<div class="row">
+    <div class="col-md-8">
+        <form action="" method = 'POST'>
+            {% csrf_token %}
+            {% for field in  update_info_form %}
+                <label for="{{ field.id_for_label }}" class='field-label'>{{ field.label }}</label>
+                {{ field }}
+                <p class="text-danger">{{ field.errors.as_text }}</p>
+            {% endfor %}
+            <input type="submit" class='btn btn-primary pull-right' value='修改'>
+            <a href="javascript:history.go(-1)" class="btn btn-danger mar-right">返回</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

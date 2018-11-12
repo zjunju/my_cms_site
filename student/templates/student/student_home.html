@@ -71,7 +71,7 @@
                 <a href="{% url 'student_message' %}">发送的信息</a>
             </li>
             <li class='{% block all_announcement_active %}{% endblock %}'>
-                <a href="{% url 'all_announcement' %}">
+                <a href="{% url 'student_announcement' %}">
                     所有公告
                 {% if request.user.no_r_ann_count %}
                 <small class="label pull-right bg-red" title='系统公告'>
@@ -129,29 +129,31 @@
     <div class="col-md-4 col-md-offset-2">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                我的文件
+                查看文件
             </div>
             <div class="panel-body">
-                <h4>公共文件</h4>
-                {% for file in public_files %}
-                    <a href="{% url 'download_file' %}?file_name={{ file }}">{{ file }}</a>
+                <h4>公共文件</h4> <!-- 获取file_path，然后进行下载 -->
+                {% for file_name, file_path in public_files_dict.items %}
+                    <a href="{% url 'download_file' %}?file={{ file_path }}">
+                        {{ file_name }}
+                    </a>
                 {% empty %}
                     <p>暂无文件</p>
                 {% endfor %}
                 <h4>教师文件</h4>
-                {% for file in teacher_files %}
-                    <a href="{% url 'download_file' %}?file_name={{ file }}">
-                        {{ file }}
+                {% for file_name,file_path in teacher_files_dict.items %}
+                    <a href="{% url 'download_file' %}?file={{ file_path }}">
+                        {{ file_name }}
                     </a>
                 {% empty %}
                     <p>暂无文件</p>
                 {% endfor %}
                 <h4>我的文件</h4>
-                {% for file in student_files %}
-                    <a href="{% url 'download_file' %}?file_name={{ file }}">
-                        {{ file }}
+                {% for file_name, file_path in student_files_dict.items %}
+                    <a href="{% url 'download_file' %}?file={{ file_path }}">
+                        {{ file_name }}
                     </a>
-                    <a href="{% url 'delete_file' %}?file_name={{ file }}" 
+                    <a href="{% url 'delete_file' %}?file={{ file_path }}" 
                         class='btn btn-danger'>
                         删除文件
                     </a> 
@@ -159,6 +161,7 @@
                 {% empty %}
                     <p>暂未上传文件</p>
                 {% endfor %}
+                
                 {% if student.teacher %}
                 <form action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}

@@ -30,7 +30,7 @@
                     <p>学院：{{ teacher.college }}</p>
                     <p>职位：{{ teacher.job_title }}</p>
                     <p>手机号码：{{ teacher.phonenumber }}</p>
-                    <p>剩余指导学生人数：{{ teacher.getRestNumber }}</p>
+                    <p>剩余指导学生人数：{{ teacher.rest_number }}</p>
                     <p>个人简介：{{ teacher.introduction }}</p>
                     <btn onclick="cancelTeacher('{% url 'cancel_teacher' %}','{{ teacher.name }}')"  class="btn btn-danger pull-right">
                         取消选择

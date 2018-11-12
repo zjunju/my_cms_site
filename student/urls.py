@@ -5,6 +5,7 @@ from .student_thesis_views import student_thesis,teacher_list, thesis_list,\
                                   cancel_thesis,apply_thesis, apply_teacher,cancel_teacher,\
                                   add_thesis, delete_thesis
 from .student_collection_views import collect, cancel_collect, student_collection
+from announcement.views import all_announcement, announcement_detail
 
 urlpatterns = [
     path('', views.student_home, name = 'student_home'),
@@ -18,8 +19,8 @@ urlpatterns = [
     ), 
 
     path('announcement/', include([
-            path('all/', views.all_announcement, name='all_announcement'),
-            path('<int:announcement_pk>', views.announcement_detail, name='announcement_detail'),
+            path('all/', all_announcement, name='student_announcement'),
+            path('<int:announcement_pk>', announcement_detail, name='student_ann_detail'),
         ])),
     
     path('collect/<int:object_id>', collect, name='collect'),    #学生收藏教师或论文题目

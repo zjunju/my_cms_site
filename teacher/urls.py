@@ -1,8 +1,11 @@
 from django.urls import path
 from . import views
+from announcement.views import all_announcement, announcement_detail
 
 urlpatterns = [
     path('', views.teacher_home, name = 'teacher_home' ),
+    path('announcement/', all_announcement, name='teacher_announcement'),
+    path('<int:announcement_pk>', announcement_detail, name='teacher_ann_detail'),
     path('update_info/', views.update_info, name='teacher_update_info'),
 
     path('thesis', views.teacher_thesis, name = 'teacher_thesis'),

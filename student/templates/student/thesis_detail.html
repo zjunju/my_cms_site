@@ -34,7 +34,7 @@
             </p>
             {% if thesis.is_choiced %}   <!-- 判断此题是否有人选择， 如果已有人选，则不显示申请选择此题按钮-->
             {% else %}
-                <a href="{% url 'apply_thesis' thesis.pk %}" class="btn btn-primary pull-right">
+                <a href="{% url 'apply_thesis' thesis.pk %}"class="btn btn-primary pull-right">
                     申请选择此题
                 </a>
                 <a href="{% url 'collect' thesis.pk %}?content_type=thesis" 
@@ -52,7 +52,9 @@
                     <ul>
                         {% for thesis in theses_with_like %}
                             <li>
-                                <a href="{% url 'thesis_detail' thesis.pk %}">{{ thesis.title }}</a>
+                                <a href="{% url 'thesis_detail' thesis.pk %}">
+                                    {{ thesis.title }}
+                                </a>
                             </li>
                         {% endfor %}
                     </ul>

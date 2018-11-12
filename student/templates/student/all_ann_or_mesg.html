@@ -18,7 +18,7 @@
             <div class="list-group">
                 {% for ann_or_mesg in ann_or_mesgs %}
                 {% if ann %}
-                  <a href="{% url 'announcement_detail' ann_or_mesg.pk %}" class="list-group-item">
+                  <a href="{% url 'student_ann_detail' ann_or_mesg.pk %}" class="list-group-item">
                 {% elif mesg %}
                   <a href="{% url 'student_message' %}" class="list-group-item">
                 {% endif %}

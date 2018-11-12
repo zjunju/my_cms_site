@@ -6,7 +6,7 @@
 {% block content_header %}全部消息{% endblock %}
 
 {% block content %}
-<div class="row">
+  <div class="row">
     <div class="col-md-6">
        <ul>
             {% for student, latest_message in latest_message_dict.items %}
@@ -31,6 +31,5 @@
             {% endfor %}
       </ul>
     </div>
-</div>
- 
+  </div>
 {% endblock %}

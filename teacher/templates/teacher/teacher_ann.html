@@ -1,0 +1,33 @@
+{% extends 'teacher/teacher_base.html' %}
+
+{% block title %}所有公告{% endblock %}
+
+{% block content_header %}所有公告{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="list-group">
+                {% for announcement in announcements %}
+                    <a href="{% url 'teacher_ann_detail' announcement.pk %}" 
+                        class="list-group-item">
+                        <h4 class="list-group-item-heading">
+                            <span>
+                              <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                              {{ announcement.sender }}
+                            </span>
+                        </h4>
+                        <p class="list-group-item-text">
+                            {{ announcement.text|truncatechars:30 }}
+                        </p>
+                    </a>
+                {% empty %}
+                    <div class="center">
+                        <i class="fa fa-bell fa-5x" aria-hidden="true"></i>
+                        <p>暂无未读公告</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

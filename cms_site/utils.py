@@ -46,25 +46,32 @@ def get_public_file(person):
 
     #获取公共文件文件夹下的所有文件
     all_public_files = [file for file in os.listdir(public_dir) if \
-                    os.path.isfile(os.path.join(public_dir,file))]
+                        os.path.isfile(os.path.join(public_dir,file))]
 
-    #获取管理员发给学生的文件               
+    for file in all_public_files:
+            public_file_dict[file] = os.path.join(public_dir, file)
+
+    #获取管理员发给学生的文件
     if person == 'student':
-        public_files = [file for file in os.listdir(os.path.join(public_dir, 'student')) \
-                         if os.path.isfile(os.path.join(public_dir,'student',file))]
+        student_public_files=[file for file in os.listdir(os.path.join(public_dir, 'student'))\
+                              if os.path.isfile(os.path.join(public_dir,'student',file))]
+        student_public_dir = os.path.join(public_dir, 'student')
+        for file in student_public_files:
+            public_file_dict[file] = os.path.join(student_public_dir, file)
         
-    #获取管理员发给教师的文件                            
+    #获取管理员发给教师的文件
     else:
-        public_files = [file for file in os.listdir(os.path.join(public_dir, 'teacher')) \
-                        if os.path.isfile(os.path.join(public_dir,'teacher',file))]
-
-    all_public_files+=public_files
-
-    return all_public_files
+        teacher_public_files=[file for file in os.listdir(os.path.join(public_dir, 'teacher'))\
+                              if os.path.isfile(os.path.join(public_dir,'teacher',file))]
+        teacher_public_dir = os.path.join(public_dir, 'teacher')
+        for file in teacher_public_files:
+            public_file_dict[file] = os.path.join(teacher_public_dir, file)
+    return public_file_dict
 
 def get_student_file(student):
     teacher = student.teacher
-    
+    student_files_dict = {}
+
     #获取教师文件夹路径和学生文件夹路径
     teacher_dir = os.path.join(upload_dir, teacher.name + teacher.number)
     student_dir = os.path.join(teacher_dir, student.name + student.number)
@@ -81,9 +88,14 @@ def get_student_file(student):
     student_files = [file for file in os.listdir(student_dir) \
                     if os.path.isfile(os.path.join(student_dir, file))]
 
-    return student_files
+    for file in student_files:
+        student_files_dict[file] = os.path.join(student_dir, file)
+
+    return student_files_dict
 
 def get_teacher_file(teacher):
+    teacher_files_dict = {}
+
     teacher_dir = os.path.join(upload_dir, teacher.name + teacher.number)
     if not os.path.exists(teacher_dir):
         os.mkdir(teacher_dir)
@@ -91,8 +103,10 @@ def get_teacher_file(teacher):
     #获取教师文件夹下的所有文件,返回所有文件名的list
     teacher_files = [file for file in os.listdir(teacher_dir) \
                     if os.path.isfile(os.path.join(teacher_dir, file))]
+    for file in teacher_files:
+        teacher_files_dict[file] = os.path.join(teacher_dir, file)
 
-    return teacher_files
+    return teacher_files_dict
 
 def sendMessage(receiver_pk, sender, content ):
     data = {}

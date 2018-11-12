@@ -12,30 +12,17 @@ public_dir = settings.PUBLIC_DIR  #D:\1毕业设计\cms_site\media\public
 def download_file(request):
     user = request.user
     if user.is_authenticated:
-        file_name = request.GET.get('file_name', None)
-        if file_name:
-            if user.person == 'student':
-                student = user.student
-                teacher = student.teacher
-                teacher_dir = '%s%s'%(teacher.name, teacher.number)
-                student_dir = '%s%s'%(student.name, student.number)
-                student_path = os.path.join(upload_dir, teacher_dir)
-                file_path = os.path.join(student_path, student_dir)
-                if file_path:
-                    file = open(file_path, 'rb')
-                    response = FileResponse(file)
-                    response['Content-Type']='application/octet-stream'
-                    response['Content-Disposition'] = 'attachment;filename="%s"'%urlquote(file_name)
-                    return response
-                else:
-                    messages.error(request, '找不到文件')
-                    return redirect(request.META.get('HTTP_REFERER', '/'))
-
-            elif user.person == 'teacher':
-                pass
-            else:
-                pass
-
+        file_path = request.GET.get('file', None)
+        if file_path:
+            file_name = os.path.basename(file_path)
+            file = open(file_path, 'rb')  #打开要下载的文件，然后进行下载
+            response = FileResponse(file)
+            response['Content-Type']='application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="%s"'%urlquote(file_name)
+            return response
+        else:
+            messages.error(request, '找不到文件')
+            return redirect(request.META.get('HTTP_REFERER', '/'))
     return redirect('/')
 
 #删除文件

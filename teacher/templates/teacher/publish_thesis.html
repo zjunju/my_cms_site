@@ -8,8 +8,6 @@
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
-    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 {% endblock %}
 
 {% block content_header %}
@@ -28,4 +26,10 @@
         <input type="submit" value='{{ submit_value }}' class='btn btn-primary pull-right'>
         <a href="javascript:window.history.go(-1)" class="btn btn-danger mar-right">返回</a>
     </form>
+{% endblock %}
+
+
+{% block script_extends %}
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 {% endblock %}

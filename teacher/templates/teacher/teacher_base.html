@@ -62,9 +62,9 @@
                 {% block group_student %}
                     {% for student in request.user.teacher.student_set.all %}
                         <li>
-                            <a href="{% url 'student_info' %}?student_name={{ student.name }}">
-                                {{ student.name }}
-                            </a>  
+                          <a href="{% url 'student_info' %}?student_name={{ student.name }}">
+                            {{ student.name }}
+                          </a>  
                         </li>
                     {% empty %}
                         <li><a>暂无</a></li>
@@ -99,7 +99,7 @@
         </a>
         <ul class="treeview-menu">
             <li class='{% block all_ann_active %}{% endblock %}'>
-                <a href="{% url 'teacher_thesis' %}?thesis_type=all">
+                <a href="{% url 'teacher_announcement' %}">
                     <i class="fa fa-bell"></i>所有公告
                 </a>
             </li>

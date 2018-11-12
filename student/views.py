@@ -7,7 +7,6 @@ from django.db.models import Q
 from cms_site.utils import get_public_file, get_student_file, get_teacher_file, sendMessage
 from announcement.utils import getAnnouncement
 from message.models import Message
-from announcement.models import Announcement
 
 from .forms import StudentInfoForm
 from .models import Student
@@ -19,14 +18,14 @@ def student_home(request):
         student = Student.objects.get(number = user.username)
 
         #获取公告文件
-        public_files = get_public_file(user.person)
-        context['public_files'] = public_files
+        public_files_dict = get_public_file(user.person)
+        context['public_files_dict'] = public_files_dict
 
         if student.teacher:
-            student_files = get_student_file(student) #返回学生文件夹的所有文件
-            teacher_files = get_teacher_file(student.teacher)
-            context['student_files'] = student_files
-            context['teacher_files'] = teacher_files
+            student_files_dict = get_student_file(student) #返回学生文件夹的所有文件
+            teacher_files_dict = get_teacher_file(student.teacher)
+            context['student_files_dict'] = student_files_dict
+            context['teacher_files_dict'] = teacher_files_dict
             
         #获取未读信息数
         no_r_mesg_count = Message.objects.filter(receiver=user, is_read=False).count()
@@ -119,33 +118,6 @@ def student_no_read_message(request):
         context['mesg_active'] = 'active'
         context['ann_or_mesgs'] = no_read_messages
         return render(request, 'student/all_ann_or_mesg.html', context)
-    else:
-        messages.error(request, '请先登录')
-        return redirect('/')
-
-def all_announcement(request):
-    user = request.user
-    if user.is_authenticated and user.person == 'student':
-        announcements = getAnnouncement(user)
-        
-        context = {}
-        context['content_header'] = '所有公告'
-        context['ann'] = 'ann'
-        context['ann_active'] = 'active'
-        context['ann_or_mesgs'] = announcements
-        return render(request, 'student/all_ann_or_mesg.html', context)
-    else:
-        messages.error(request, '请先登录')
-        return redirect('/')
-
-def announcement_detail(request, announcement_pk):
-    user = request.user
-    if user.is_authenticated and user.person == 'student':
-        announcement = Announcement.objects.get(pk = announcement_pk)
-        
-        context = {}
-        context['announcement'] = announcement
-        return render(request, 'student/announcement_detail.html', context)
     else:
         messages.error(request, '请先登录')
         return redirect('/')

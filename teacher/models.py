@@ -18,30 +18,26 @@ class Teacher(TeacherInfo):
 
     max_number = models.PositiveIntegerField(default = 0, verbose_name = '最大指导学生人数')
 
+    rest_number = models.PositiveIntegerField(default = 0, verbose_name ='剩余指导学生人数')
+
     collection = GenericRelation('student.Collection')
 
     read_announcement = models.ManyToManyField('announcement.Announcement', blank=True)
 
-    
 
     def __str__(self):
         return self.name
-
-    def getRestNumber(self):
-        rest_number = self.max_number - self.student_set.count()
-        return rest_number
-    getRestNumber.short_description = '剩余指导人数'
-
 
     def getRestThesisNum(self):
         rest_thesis_num = self.user.thesis_set.filter(is_choiced=False).count()
         return rest_thesis_num
     getRestThesisNum.shor_description = '剩余论文选题数'
 
+    #剩余论文题目集合
     def getRestTheses(self):
         rest_theses = self.user.thesis_set.filter(is_choiced=False)
         return rest_theses
 
     class Meta:
         verbose_name_plural = '教师'
-        ordering = ['pk']
+        ordering = ['-rest_number']

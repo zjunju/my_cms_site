@@ -12,6 +12,14 @@ function cancelTeacher(url, teacher_name){
     }
 }
 
+function aggre_thesis(url){
+    if_aggre = confirm('确定同意该选题？')
+    if (if_aggre){
+        window.open(url, '_self');
+    }
+
+}
+
 function upload_file(){
     var files = document.getElementById('uploadFile');
     var uploadFile = files.files[0];
@@ -19,11 +27,16 @@ function upload_file(){
         file_size = uploadFile.size; // 获取文件的大小
         if (file_size > 50*1024*1024){
             alert('上传文件不能超过50M！');
-            files.outerHTML = files.outerHTML;  //情况file_input的内容
+            files.outerHTML = files.outerHTML;  //清空file_input的内容
         }
     }else{
         alert('请添加文件！')
     }
+}
+
+function cancel_show(){
+    var show_div = document.getElementById('disggreReson');
+    show_div.style.display = 'none';
 }
 
 /* 显示和隐藏不同意申请理由的输入框 */

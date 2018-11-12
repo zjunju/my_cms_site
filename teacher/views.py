@@ -63,11 +63,13 @@ def update_info(request):
         if request.method == 'POST':
             update_info_form = UpdateInfoForm(request.POST)
             if update_info_form.is_valid():
+                max_number = update_info_form.cleaned_data['max_number']
                 teacher.college = update_info_form.cleaned_data['college']
                 teacher.job_title = update_info_form.cleaned_data['job_title']
                 teacher.introduction = update_info_form.cleaned_data['introduction']
-                teacher.max_number = update_info_form.cleaned_data['max_number']
+                teacher.max_number = max_number
                 teacher.phonenumber = update_info_form.cleaned_data['phone_number']
+                teacher.rest_number = max_number - teacher.student_set.all().count()
                 teacher.save()
                 messages.success(request, '修改成功！')
                 return redirect(reverse('teacher_home'))
@@ -241,7 +243,8 @@ def aggre_thesis(request):
                 thesis.need_verify = False
                 student.save()
                 thesis.save()
-                return redirect(request.META.get('HTTP_REFERER', reverse('teacher_home')))
+                messages.success('已同意')
+                return redirect(reverse('teacher_home'))
             except ObjectDoesNotExist:
                 messages.error(request, '找不到该选题')
         return redirect(reverse('teacher_home')) 
