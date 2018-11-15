@@ -8,7 +8,7 @@ urlpatterns = [
     path('<int:announcement_pk>', announcement_detail, name='teacher_ann_detail'),
     path('update_info/', views.update_info, name='teacher_update_info'),
 
-    path('thesis', views.teacher_thesis, name = 'teacher_thesis'),
+    path('thesis/', views.teacher_thesis, name = 'teacher_thesis'),
 
     path('thesis/publish', views.publish_thesis, name = 'publish_thesis'),
     path('thesis/<int:thesis_pk>/update', views.update_thesis, name='update_thesis'),

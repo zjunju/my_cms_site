@@ -39,7 +39,6 @@ def student_home(request):
         if user.no_r_ann_count !=no_r_ann_count:
             user.no_r_ann_count = no_r_ann_count
             user.save()
-
         context['student'] = student
         return render(request, 'student/student_home.html', context)
     else:

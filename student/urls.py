@@ -25,7 +25,8 @@ urlpatterns = [
     
     path('collect/<int:object_id>', collect, name='collect'),    #学生收藏教师或论文题目
     path('collection', student_collection, name='student_collection'),   #学生的收藏
-    path('collection/cancel_collect', cancel_collect, name='cancel_collect'),  #取消收藏
+    path('collection/cancel_collect/<str:ct>/<int:object_id>', \
+                                cancel_collect, name='cancel_collect'),  #取消收藏
 
     path('teacher_list/', teacher_list, name='teacher_list'),         #教师列表
     path('teacher_info/', teacher_info, name='teacher_info'),     #查看教师信息

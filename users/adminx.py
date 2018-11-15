@@ -19,7 +19,7 @@ class ThesisInline(object):
 
 
 class StudentUserAdmin(UserAdmin):
-    list_display = ['username', 'get_person_name']
+    list_display = ['username']
     def queryset(self):
         qs = super(UserAdmin, self).queryset()
         qs = qs.filter(person='student')

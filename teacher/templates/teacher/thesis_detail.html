@@ -32,13 +32,13 @@
                 {% if thesis.need_verify %}
                     <span>
                     发起审核的学生：
-                    <a href="{% url 'student_info' %}?student_pk={{ thesis.publisher.student.pk }}">
-                        {{ thesis.publisher.student.name }}
+                    <a href="{% url 'student_info' %}?student_name={{ thesis.publisher.student.name }}">
+                        {{ thesis.publisher.student }}
                     </a>
                     </span>
                 {% else %}
                 <span>
-                    选题学生：<a href="{% url 'student_info' %}?student_pk={{ thesis.student.pk }}">
+                    选题学生：<a href="{% url 'student_info' %}?student_name={{ thesis.student.name }}">
                     {{ thesis.student }}</a>
                 </span>
                 {% endif %}
@@ -49,7 +49,7 @@
         {% if thesis.is_choiced %}
             {% if thesis.need_verify %}
                 <button class="btn btn-success pull-right" 
-                        onclick='aggre_thesis("{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}")'>
+                onclick='aggre_thesis("{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}")'>
                     审核通过
                 </button>
                 <button class="btn btn-warning mar-right" id='show_div'>

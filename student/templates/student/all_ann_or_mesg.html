@@ -18,14 +18,19 @@
             <div class="list-group">
                 {% for ann_or_mesg in ann_or_mesgs %}
                 {% if ann %}
-                  <a href="{% url 'student_ann_detail' ann_or_mesg.pk %}" class="list-group-item">
+                  <a href="{% url 'student_ann_detail' ann_or_mesg.pk %}" 
+                    class="list-group-item">
                 {% elif mesg %}
                   <a href="{% url 'student_message' %}" class="list-group-item">
                 {% endif %}
                       <h4 class="list-group-item-heading">
                         <span>
                           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                          {{ ann_or_mesg.sender }}
+                          {% if ann_or_mesg.sender.is_staff %}
+                            {{ ann_or_mesg.sender.first_name }}管理员  <!-- 显示发送者的名字 -->
+                          {% else %}
+                            {{ ann_or_mesg.sender.first_name }}
+                          {% endif %}
                         </span>
                         
                         <span class='pull-right'>

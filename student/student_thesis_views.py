@@ -111,23 +111,24 @@ def thesis_list(request):
     if user.is_authenticated and user.person =='student':
         college = user.student.college
         page = request.GET.get('page', 1)
-        thesis_name = request.GET.get('thesis_name', '')
-        if thesis_name:
-            theses = Thesis.objects.filter(is_choiced=False, title__contains=thesis_name)
-            if theses.count():
-                messages.success(request, '为你找到如下结果')
-            else:
-                theses = cache.get('theses', None)
-                if not theses:
-                    theses = Thesis.objects.filter(is_choiced = False, \
+        if request.method == 'POST':
+            thesis_name = request.POST.get('thesis_name')
+            if thesis_name.strip():
+                theses = Thesis.objects.filter(is_choiced=False, title__contains=thesis_name,\
                                                 publisher__teacher__college = college)
-                    cache.set('theses', theses, 120)
-                messages.error(request, '搜索不到此论文题目，已为你显示所有论文题目')
+                if theses.count():
+                    messages.success(request, '为你找到如下结果')
+                else:
+                    messages.error(request, '未找到结果，为你显示所有论文选题')
+                    return redirect(reverse('thesis_list'))
+            else:
+                messages.error(request, '论文题目不能为空')
+                return redirect(reverse('thesis_list'))
         else:
             theses = cache.get('theses', None)
             if not theses:
                 theses = Thesis.objects.filter(is_choiced = False, \
-                                                publisher__teacher__college = college)
+                                            publisher__teacher__college = college)
                 cache.set('theses', theses, 120)
 
         tag_list = cache.get('thesis')

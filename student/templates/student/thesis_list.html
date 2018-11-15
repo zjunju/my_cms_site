@@ -11,10 +11,10 @@
 {% endblock %}
 
 {% block search_form %}
-    <form action="" method="GET" class="sidebar-form">
+    <form action="" method="POST" class="sidebar-form">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" name="thesis_name" class="form-control" 
+            <input type="text" name="thesis_name" class="form-control"
                     placeholder="输入论文题目">
             <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat">

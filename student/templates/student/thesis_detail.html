@@ -5,10 +5,13 @@
 {% block info_active %}{% endblock %}
 {% block thesis_active %}active{% endblock %}
 
-
 {% block content_header %}
     {{ thesis.title }}
-    <a href="javascript:history.go(-1)" class="btn btn-danger">返回</a>
+    {% if messages %}
+        <a href="javascript:history.go(-2)" class="btn btn-danger">返回</a>
+    {% else %}
+        <a href="javascript:history.back()" class="btn btn-danger">返回</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

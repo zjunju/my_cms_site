@@ -27,14 +27,13 @@ def collect(request, object_id):
     else:
         return redirect('/')
 
-def cancel_collect(request):
+def cancel_collect(request, ct, object_id):
     user = request.user
     if user.is_authenticated and user.person =='student':
-        ct = request.GET.get('content_type')
         content_type = ContentType.objects.get(model=ct)
-        object_id = request.GET.get('object_id')
         student = user.student
-        collect = Collection.objects.get(content_type=content_type, object_id=object_id, student=student)
+        collect = Collection.objects.get(content_type=content_type, object_id=object_id,\
+                                          student=student)
         collect.delete()
         messages.success(request, '取消收藏成功')
         return redirect(request.META.get('HTTP_REFERER','/'))
@@ -45,16 +44,19 @@ def student_collection(request):
     user = request.user
     if user.is_authenticated and user.person =='student':
         student = user.student
-        thesis_ct = ContentType.objects.get_for_model(Thesis)
-        teacher_ct = ContentType.objects.get_for_model(Teacher)
-        thesis_collections = Collection.objects.filter(student=student, content_type=thesis_ct)
-        teacher_collectons = Collection.objects.filter(student=student, content_type=teacher_ct)
-
+        thesis_collections = Thesis.objects.filter(collection__student=student,\
+                                                    is_choiced=False)
+        teacher_collections = Teacher.objects.filter(collection__student=student, \
+                                                    rest_number__gt=0)
+        invalid_theses = Thesis.objects.filter(collection__student=student,\
+                                                    is_choiced=True)
+        invalid_teachers = Teacher.objects.filter(collection__student=student, \
+                                                    rest_number=0)
         context = {}
-        no_r_mesg_count = Message.objects.filter(receiver=user, is_read=False).count()
         context['thesis_collections'] = thesis_collections
-        context['teacher_collectons'] = teacher_collectons
-        context['no_r_mesg_count'] = no_r_mesg_count
+        context['teacher_collections'] = teacher_collections
+        context['invalid_theses'] = invalid_theses
+        context['invalid_teachers'] = invalid_teachers
         return render(request, 'student/student_collection.html', context)
     else:
         return redirect('/')

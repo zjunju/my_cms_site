@@ -1,12 +1,12 @@
-{% extends 'teacher/teacher_base.html' %}
+{% extends 'teacher/teacher_ann.html' %}
 
 {% block title %}公告{% endblock %}
 
 {% block content_header %}公告信息{% endblock %}
 
-{% block content %}
 
+
+{% block content %}
     <p>{{ announcement.pub_time }}</p>
     <p>{{ announcement.text }}</p>
-    
 {% endblock %}

@@ -29,7 +29,7 @@ def download_file(request):
 def delete_file(request):
     user = request.user
     if user.is_authenticated:
-        file_path = request.GET.get('file_path', None)
+        file_path = request.GET.get('file', None)
         if file_path:
             try:
                 os.remove(file_path)

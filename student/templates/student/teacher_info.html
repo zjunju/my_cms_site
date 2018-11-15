@@ -9,8 +9,6 @@
 
 
 {% block info_active %}{% endblock %}
-{% block thesis_active %}{% endblock %}
-{% block all_thesis_active %}{% endblock %}
 {% block teacher_info_active %}{{ active }}{% endblock %}  <!-- 如果是学生导师则高亮 -->
 
 {% block content_header %}
@@ -32,9 +30,11 @@
                     <p>手机号码：{{ teacher.phonenumber }}</p>
                     <p>剩余指导学生人数：{{ teacher.rest_number }}</p>
                     <p>个人简介：{{ teacher.introduction }}</p>
+                    {% if active %}
                     <btn onclick="cancelTeacher('{% url 'cancel_teacher' %}','{{ teacher.name }}')"  class="btn btn-danger pull-right">
                         取消选择
                     </btn>
+                    {% endif %}
                 </div>
             </div>
         </div>

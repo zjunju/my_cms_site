@@ -2,8 +2,8 @@ import xadmin
 from .models import Tag, Thesis
 
 class ThesisAdmin(object):
-    list_display = ['title', 'pub_date', 'publisher', 'is_choiced', 'tags']
-    list_filter = ['title', 'pub_date', 'is_choiced', 'tags']
+    list_display = ['title', 'pub_date', 'publisher', 'is_choiced', 'tags', 'getCollege']
+    list_filter = ['title', 'pub_date', 'is_choiced', 'tags', 'publisher__teacher__college']
     search_fields =['title',  'publisher__teacher__name']
     model_icon = 'fa fa-book'
 

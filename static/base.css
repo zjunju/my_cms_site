@@ -5,9 +5,9 @@ body{
 
 /* 设置短的输入框 */
 .input-field{
-    width: 30%;
+    width: 40%;
     font-size: 14px;
-    display: block;
+    display: inline-block;
     height: 34px;
     padding: 6px 12px;
     font-size: 14px;
@@ -124,3 +124,6 @@ div.disggre-reson-hid{
     margin-top: 40px;
 }
 
+div.thesis-info{
+    min-height: 150px;
+}

@@ -21,6 +21,9 @@
         {% for field in thesis_form %}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label> <br>
             {{ field }}
+            {% if field.name == 'tag' %}
+                <span class='text-danger'>如果想给论文题目增加多个标签，可以使用空格分隔标签</span>
+            {% endif %}
             <p class='text-danger'>{{ field.errors.as_text }}</p>
         {% endfor %}
         <input type="submit" value='{{ submit_value }}' class='btn btn-primary pull-right'>

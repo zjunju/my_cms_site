@@ -29,3 +29,12 @@ class Thesis(models.Model):
         ordering = ['-pub_date']
         unique_together = (('title', 'publisher'))
 
+    def getCollege(self):
+        if self.publisher.person == 'student':
+            return self.publisher.student.college
+        elif self.publisher.person == 'teacher':
+            return self.publisher.teacher.college
+        else:
+            return None
+    getCollege.shor_description = '学院名称'
+    

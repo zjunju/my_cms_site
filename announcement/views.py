@@ -9,6 +9,7 @@ def all_announcement(request):
         if user.person == 'student':
             announcements = getAnnouncement(user)
             
+            user.no_r_ann_count = len(announcements)
             context = {}
             context['content_header'] = '所有公告'
             context['ann'] = 'ann'

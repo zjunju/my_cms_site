@@ -90,39 +90,15 @@ def update_info(request):
 def teacher_thesis(request):
     user = request.user
     if user.is_authenticated and user.person=='teacher':
-        page = request.GET.get('page', 1)
-        thesis_type = request.GET.get('thesis_type', 'all')
-        active = ''  #左边导航栏高亮
-        content_header = ''     #每页的内容头
-        no_theses_text = ''  #没有theses时的显示文本
-        if thesis_type == 'all':
-            theses = Thesis.objects.filter(publisher = user)
-            active = 'all'
-            content_header = '所有论文选题'
-            no_theses_text = '暂未发布任何论文题目'
-        elif thesis_type == 'is_choiced':
-            theses = Thesis.objects.filter(publisher = user, is_choiced=True)
-            active = 'is_choiced'
-            content_header = '我的未被选择的论文选题'
-            no_theses_text = '所有论文选题已被选择'
-        elif thesis_type == 'no_choiced':
-            theses = Thesis.objects.filter(publisher = user, is_choiced=False)
-            active = 'no_choiced'
-            content_header = '我的已被选择的论文选题'
-            no_theses_text = '暂无论文被选择'
-        elif thesis_type == 'thesis_verify':
-            theses = Thesis.objects.filter(publisher__person = 'student', \
-                                    publisher__student__teacher = user.teacher,need_verify=True)
-            active = 'verify'
-            no_theses_text = '暂无待审核的论文选题'
-            content_header = '待审核的论文选题'
-        else:
-            return redirect(reverse('teacher_home'))
-        
-        context = get_page_list(theses, page, num, 'theses')
-        context['content_header'] = content_header
-        context['no_theses_text'] = no_theses_text
-        context[active] = 'active'
+        all_theses = Thesis.objects.filter(publisher = user)
+        need_verify_theses = Thesis.objects.filter(publisher__person = 'student', \
+                                publisher__student__teacher = user.teacher,need_verify=True)
+
+        context = {}
+        context['theses'] = all_theses
+        context['is_choiced_theses'] = all_theses.filter(is_choiced=True)
+        context['no_choiced_theses'] = all_theses.filter(is_choiced=False)
+        context['need_verify_theses'] = need_verify_theses
         return render(request, 'teacher/teacher_thesis.html', context)
     else:
         messages.error(request, '请先登录')
@@ -243,7 +219,7 @@ def aggre_thesis(request):
                 thesis.need_verify = False
                 student.save()
                 thesis.save()
-                messages.success('已同意')
+                messages.success(request,'已同意')
                 return redirect(reverse('teacher_home'))
             except ObjectDoesNotExist:
                 messages.error(request, '找不到该选题')

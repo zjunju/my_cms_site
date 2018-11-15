@@ -1,4 +1,5 @@
 {% extends 'teacher/teacher_base.html' %}
+{% load staticfiles %}
 
 {% block title %}我的小组|成员{% endblock %}
 
@@ -59,11 +60,13 @@
             </div>
             <div class="panel-body">
                 {% if thesis %}
-                    <p> <span>时间：{{ thesis.pub_date }}</span> 
+                    <p> <span>时间：{{ thesis.pub_date }}</span>
+                        {% if thesis.tags.all %}
                         <span>标签：{% for tag in thesis.tags.all %}
                                         {{ tag.name }}
                                     {% endfor %}
                         </span>
+                        {% endif %}
                     </p>
                     {{ thesis.content|safe }}
                 {% elif student_pub_thesis %}
@@ -76,11 +79,24 @@
                             <span class='text-danger'>待审核</span>
                         </p>
                         <p>{{ student_pub_thesis.content|safe }}</p>
-                        <a href="" class="btn btn-primary">不同意</a>
-                        <a href="{% url 'aggre_thesis' %}?thesis_pk={{ student_pub_thesis.pk }}" 
-                            class="btn btn-danger">    
+                        <button id='show_div' class="btn btn-primary">不同意</button>
+                        <button  onclick="aggre_thesis('{% url 'aggre_thesis' %}?thesis_pk={{ student_pub_thesis.pk }}')" class="btn btn-danger">    
                             同意
-                        </a>
+                        </button>
+                         <div class="disggre-reson-hid" id='disggreReson'>
+                            <form action="{% url 'disaggre_thesis' %}" method='POST'>
+                                {% csrf_token %}
+                                <input type="hidden" value='{{ thesis.publisher.pk }}' 
+                                        name='student_user_pk'> 
+                                <span>请输入不同意的理由</span>
+                                <textarea class="form-control" rows="3" name='disggre_text' 
+                                            hloaderplace='请输入理由'></textarea>
+                                <button class="btn btn-primary pull-right">发送</button>
+                            </form>
+                            <button class="btn btn-danger mar-right" onclick="cancel_show()">
+                                取消
+                            </button>
+                        </div>
                     {% else %}
                         <span>时间：{{ student_pub_thesis.pub_date }}</span>
                         <span class='text-danger'>已审核，不同意该论文题目</span>
@@ -92,4 +108,8 @@
             </div>
         </div>
 </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script type="text/javascript" src="{% static 'extends_script.js' %}"></script>
 {% endblock %}
