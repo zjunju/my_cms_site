@@ -13,7 +13,6 @@
 
 {% block content_header %}
     {{ thesis.title }}
-    <a href="javascript:history.go(-1)" class="btn btn-danger">返回</a>
 {% endblock %}
 
 {% block content %}
@@ -48,27 +47,31 @@
 
         {% if thesis.is_choiced %}
             {% if thesis.need_verify %}
-                <button class="btn btn-success pull-right" 
-                onclick='aggre_thesis("{% url 'aggre_thesis' %}?thesis_pk={{ thesis.pk }}")'>
+            <div class="verify-btn">
+               <button class="btn btn-success pull-right" 
+                onclick="aggre_thesis('{% url "aggre_thesis" %}?thesis_pk={{thesis.pk}}')">
                     审核通过
                 </button>
                 <button class="btn btn-warning mar-right" id='show_div'>
                     审核不通过
+                </button> 
+            </div>
+                
+            <div class="disggre-reson-hid" id='disggreReson'>
+                <form action="{% url 'disaggre_thesis' %}" method='POST'>
+                    {% csrf_token %}
+                    <input type="hidden" value='{{ thesis.publisher.pk }}' 
+                            name='student_user_pk'> 
+                    <span>请输入不同意的理由</span>
+                    <textarea class="form-control" rows="3" name='disaggre_text' 
+                                hloaderplace='请输入理由'></textarea>
+                    <input type='submit' class="btn btn-primary pull-right" value='发送'>
+                    </input>
+                </form>
+                <button class="btn btn-danger mar-right">
+                    取消
                 </button>
-                <div class="disggre-reson-hid" id='disggreReson'>
-                    <form action="{% url 'disaggre_thesis' %}" method='POST'>
-                        {% csrf_token %}
-                        <input type="hidden" value='{{ thesis.publisher.pk }}' 
-                                name='student_user_pk'> 
-                        <span>请输入不同意的理由</span>
-                        <textarea class="form-control" rows="3" name='disggre_text' 
-                                    hloaderplace='请输入理由'></textarea>
-                        <button class="btn btn-primary pull-right">发送</button>
-                    </form>
-                    <button class="btn btn-danger mar-right" onclick="cancel_show()">
-                        取消
-                    </button>
-                </div>
+            </div>
             {% endif %}
         {% else %}
            <btn onclick="delete_thesis('{% url "delete_thesis" %}?thesis_title={{ thesis.title }}')" 

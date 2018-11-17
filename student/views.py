@@ -35,7 +35,7 @@ def student_home(request):
 
         #获取公告
         announcements = getAnnouncement(user)
-        no_r_ann_count = len(announcements)
+        no_r_ann_count = announcements.count() - user.read_announcement.count()
         if user.no_r_ann_count !=no_r_ann_count:
             user.no_r_ann_count = no_r_ann_count
             user.save()

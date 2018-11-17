@@ -1,4 +1,5 @@
 from django import forms
+from captcha.fields import CaptchaField
 from django.contrib.auth import authenticate
 
 
@@ -9,6 +10,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='密码', widget=forms.PasswordInput(
                                             attrs={'placeHolder':'请输入密码',\
                                                     'class':'form-control'}))
+    captcha = CaptchaField(label='验证码')
 
     def clean(self):
         username = self.cleaned_data['username']

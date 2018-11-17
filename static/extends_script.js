@@ -17,7 +17,6 @@ function aggre_thesis(url){
     if (if_aggre){
         window.open(url, '_self');
     }
-
 }
 
 function upload_file(){

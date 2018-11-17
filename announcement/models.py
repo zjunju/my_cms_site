@@ -15,15 +15,5 @@ class Announcement(models.Model):
         return '<Announcement:%s>'%self.sender
 
     class Meta:
-        verbose_name_plural = '公告栏' 
-
-class Plan(models.Model):
-    title = models.CharField(max_length=100,verbose_name='计划标题')
-    content = models.TextField(verbose_name='计划详细内容')
-    sender = models.ForeignKey(User,on_delete=models.CASCADE,verbose_name='发布者')
-    start_time = models.DateField(verbose_name='开始时间')
-    stop_time = models.DateField(verbose_name='截至时间')
-    person = models.CharField(max_length = 10,choices =(('teacher','教师'),('student','学生')))
-
-    class Meta:
-        verbose_name_plural = '计划'
+        verbose_name_plural = '公告栏'
+        ordering = ['-pub_time']

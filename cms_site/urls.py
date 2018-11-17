@@ -21,6 +21,7 @@ from .views import download_file, delete_file, upload_file
                     
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
+    path(r'captcha', include('captcha.urls')),  # 验证码
 
     #users.view
     path('', views.login, name='login'),

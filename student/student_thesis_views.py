@@ -227,12 +227,14 @@ def cancel_teacher(request):
         student = user.student 
         thesis = student.thesis
         teacher = student.teacher
-        teacher.rest_number -= 1
+        teacher.rest_number += 1
         student.teacher = None
         if thesis:
             thesis.is_choiced = False
             student.thesis = None
             student.is_choiced_thesis = False
+        if user.thesis_set.all():
+            user.thesis_set.all().delete()
         student.save()
         teacher.save()
         messages.error(request, '取消成功！')

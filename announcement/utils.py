@@ -4,21 +4,24 @@ from django.db.models import Q
 
 
 def getAnnouncement(obj):
-    if obj.person == 'teacher':
-        announcements = Announcement.objects.filter(Q(receiver = 'all')|Q(receiver = 'all_teacher'))
+    person = obj.person
+    if person == 'teacher':
+        announcements = Announcement.objects.filter(Q(receiver = 'all')\
+                                                |Q(receiver = 'all_teacher'))
+
+        
         return announcements
-    elif obj.person == 'student':
+    elif person == 'student':
         student = obj.student
         if student.is_choiced_thesis == False:
             announcements = Announcement.objects.filter(Q(receiver='all_student')\
                                         |Q(receiver='all')|Q(receiver='no_thesis_student'))
         elif student.is_choiced_thesis == True:
             announcements = Announcement.objects.filter(Q(receiver='all_student')\
-                                    |Q(receiver='all')|Q(receiver='thesis_student'))
+                                        |Q(receiver='all')|Q(receiver='thesis_student'))
         else:
             announcements = Announcement.objects.filter(Q(receiver='all_student')\
-                                                        |Q(receiver='all'))
-
+                                                            |Q(receiver='all'))
         return announcements
     else:
         return None

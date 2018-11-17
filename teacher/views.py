@@ -231,20 +231,19 @@ def aggre_thesis(request):
 def disaggre_thesis(request):
     user = request.user
     if user.is_authenticated and user.person == 'teacher':
-        print(request.POST.get('student_user_pk', None))
         receiver_pk = int(request.POST.get('student_user_pk', None))
         if receiver_pk:
             try:
                 receiver = User.objects.get(pk=receiver_pk)
                 thesis = receiver.thesis_set.first()
-                content = request.POST.get('disggre_text', None)
-                if content.strip():
+                content = request.POST.get('disaggre_text', None)
+                if content is None or content.strip() is None:
+                    messages.error(request, '理由不能为空！')
+                else:
                     Message.objects.create(receiver = receiver, sender=user,content=content)
                     thesis.need_verify = False
                     thesis.save()
                     messages.success(request, '发送成功！')
-                else:
-                    messages.error(request, '理由不能为空！')
 
             except ObjectDoesNotExist:
                 pass

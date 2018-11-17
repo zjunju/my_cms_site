@@ -22,8 +22,6 @@ class Teacher(TeacherInfo):
 
     collection = GenericRelation('student.Collection')
 
-    read_announcement = models.ManyToManyField('announcement.Announcement', blank=True)
-
 
     def __str__(self):
         return self.name

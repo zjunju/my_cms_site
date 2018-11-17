@@ -25,8 +25,6 @@ class Student(StudentInfo):
 
     is_choiced_thesis = models.BooleanField(default = False, verbose_name = '是否选题')
 
-    read_announcement = models.ManyToManyField('announcement.Announcement', blank=True)
-
     def __str__(self):
         return self.name
 

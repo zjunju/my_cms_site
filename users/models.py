@@ -8,7 +8,10 @@ class User(AbstractUser):
                                 ('admin','管理员')))
 
     no_r_message_count = models.PositiveIntegerField(default=0)
+
     no_r_ann_count = models.PositiveIntegerField(default=0)
+
+    read_announcement = models.ManyToManyField('announcement.Announcement', blank=True)
 
 
     def __str__(self):

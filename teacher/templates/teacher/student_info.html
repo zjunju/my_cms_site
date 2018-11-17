@@ -83,14 +83,14 @@
                         <button  onclick="aggre_thesis('{% url 'aggre_thesis' %}?thesis_pk={{ student_pub_thesis.pk }}')" class="btn btn-danger">    
                             同意
                         </button>
-                         <div class="disggre-reson-hid" id='disggreReson'>
+                        <div class="disggre-reson-hid" id='disggreReson'>
                             <form action="{% url 'disaggre_thesis' %}" method='POST'>
                                 {% csrf_token %}
-                                <input type="hidden" value='{{ thesis.publisher.pk }}' 
-                                        name='student_user_pk'> 
+                                <input type="hidden" name='student_user_pk'
+                                value='{{ student_pub_thesis.publisher.pk }}' /> 
                                 <span>请输入不同意的理由</span>
-                                <textarea class="form-control" rows="3" name='disggre_text' 
-                                            hloaderplace='请输入理由'></textarea>
+                                <textarea class="form-control" rows="3" 
+                                name='disggre_text' hloaderplace='请输入理由'></textarea>
                                 <button class="btn btn-primary pull-right">发送</button>
                             </form>
                             <button class="btn btn-danger mar-right" onclick="cancel_show()">

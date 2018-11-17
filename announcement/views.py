@@ -9,7 +9,7 @@ def all_announcement(request):
         if user.person == 'student':
             announcements = getAnnouncement(user)
             
-            user.no_r_ann_count = len(announcements)
+            user.no_r_ann_count = len(announcements)-user.read_announcement.count()
             context = {}
             context['content_header'] = '所有公告'
             context['ann'] = 'ann'
@@ -31,7 +31,11 @@ def announcement_detail(request, announcement_pk):
     user = request.user
     if user.is_authenticated:
         announcement = Announcement.objects.get(pk = announcement_pk)
-            
+        if announcement not in user.read_announcement.all():
+            user.read_announcement.add(announcement)
+            user.no_r_ann_count -= 1
+            user.save()
+
         context = {}
         context['announcement'] = announcement
         if user.person == 'student':

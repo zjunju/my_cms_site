@@ -76,9 +76,11 @@
             <li class='{% block all_ann_active %}{% endblock %}'>
                 <a href="{% url 'teacher_announcement' %}">
                     <i class="fa fa-bell"></i>所有公告
-                     <small class="label pull-right bg-red" title='所有公告'>
-                        {{ request.user.no_r_ann_count }}
-                    </small>
+                    {% if  request.user.no_r_ann_coun %}
+                        <small class="label pull-right bg-red" title='所有公告'>
+                            {{ request.user.no_r_ann_coun }}
+                        </small>
+                    {% endif %}
                 </a>
             </li>
             <li class='{% block no_r_message_active %}{% endblock %}'>

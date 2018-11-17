@@ -2,7 +2,6 @@ body{
     font-size: 16px!important;
 }
 
-
 /* 设置短的输入框 */
 .input-field{
     width: 40%;
@@ -27,6 +26,11 @@ ul{
     list-style-type: none;
     padding: 0;
     margin:　0;
+}
+
+/* teacher_send_message */
+a.back-btn{
+    color: black;
 }
 
 .form-control{
@@ -56,10 +60,6 @@ ul{
     color: #444;
 }
 
-div.django-ckeditor-widget{
-    width: 100%;
-}
-
 .chat-text-right{
     border-radius: 5px;
     position: relative;
@@ -70,6 +70,11 @@ div.django-ckeditor-widget{
     margin: 5px 0;
     color: #fff;
 }
+
+div.django-ckeditor-widget{
+    width: 100%;
+}
+
 
 .my-panel .panel-primary .panel-height{
     height: 600px;
@@ -119,9 +124,15 @@ div.center{
     margin-top: 10%;
 }
 
+div.verify-btn-div{
+    height: 50px;
+    overflow: hidden;
+}
+
 div.disggre-reson-hid{
     display: none;
-    margin-top: 40px;
+    clear: both;
+    overflow: hidden;
 }
 
 div.thesis-info{
